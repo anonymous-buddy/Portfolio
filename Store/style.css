@@ -124,28 +124,15 @@ button {
   width: 100%;
 }
 
-.nav-brand .glitch {
+.nav-brand span {
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--neon-green);
-  text-shadow: 0 0 5px var(--neon-green);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
   position: relative;
   display: inline-block;
   margin: 0 1rem;
-}
-
-/* Simple hover glitch effect for brand */
-.nav-brand .glitch:hover {
-  animation: glitch-anim 0.3s infinite;
-}
-
-@keyframes glitch-anim {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  100% { transform: translate(0); }
+  letter-spacing: 2px;
 }
 
 /* Hamburger Menu Icon */
@@ -381,12 +368,7 @@ button {
   height: 200px;
   object-fit: cover;
   border-bottom: 1px solid var(--border-color);
-  filter: grayscale(80%) contrast(1.2);
   transition: var(--transition);
-}
-
-.product-card:hover .card-image {
-  filter: grayscale(0%) contrast(1);
 }
 
 .card-content {
@@ -397,9 +379,18 @@ button {
 }
 
 .card-title {
-  font-size: 1.1rem;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+  color: var(--neon-green);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+  background: rgba(0, 255, 136, 0.05);
+  border-left: 3px solid var(--neon-green);
+  padding: 0.4rem 0.8rem;
+  font-family: var(--font-mono);
+  border-radius: 2px;
 }
 
 .card-price {
