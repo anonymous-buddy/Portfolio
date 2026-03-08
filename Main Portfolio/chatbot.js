@@ -361,6 +361,8 @@ openChat.onclick = () => {
 
   chatBot.classList.add("show");
   openChat.style.display = "none";
+  document.body.classList.add("chat-active");
+  document.documentElement.classList.add("chat-active");
 
   botReply(formatText(responses.default));
 };
@@ -368,6 +370,8 @@ openChat.onclick = () => {
 closeChat.onclick = () => {
   chatBot.classList.remove("show");
   resetContactFlow();
+  document.body.classList.remove("chat-active");
+  document.documentElement.classList.remove("chat-active");
   setTimeout(() => {
     openChat.style.display = "flex";
   }, 400);

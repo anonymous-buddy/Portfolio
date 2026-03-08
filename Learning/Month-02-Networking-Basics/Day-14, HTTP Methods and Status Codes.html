@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="./../Images/M2D5.svg">
-  <title>Day-05, Multi Subnetting and Subnet Masks | Learning</title>
+  <link rel="icon" type="image/svg+xml" href="./../Images/M2D14.svg">
+  <title>Day-14, HTTP Methods and Status Codes | Learning</title>
   <style>
   @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700&display=swap');
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -153,263 +153,153 @@
     <span class="sep">&rsaquo;</span><span class="current">Month 02 Networking Basics</span>
   </div>
   <div class="container">
-    <h1>🔢 Day 5: Multi-Subnetting and Subnet Masks</h1>
+    <h1>🌐 Day 14: HTTP Methods, Tools, and Status Codes</h1>
     <p>
       <img src="https://img.shields.io/badge/Networking-Basics-blue?style=for-the-badge" alt="Networking">
-      <img src="https://img.shields.io/badge/Subnetting-Masks-success?style=for-the-badge" alt="Subnetting">
+      <img src="https://img.shields.io/badge/Web-informational?style=for-the-badge" alt="Web">
+      <img src="https://img.shields.io/badge/HTTP-critical?style=for-the-badge" alt="HTTP">
     </p>
 
     <blockquote>
-      <p><em>Think of a Large Company with different departments: HR, Sales, and IT. Subnetting is how we give each department its own secure floor while keeping everyone in the same building.</em> 🏢</p>
+      <p><em>Now that we understand the basics of Requests and Responses, it is time to decode every part of that "text conversation."</em> 🌐</p>
     </blockquote>
 
-    <hr>
+    <h2>1. HTTP Methods (The "Verbs")</h2>
 
-    <h2>🏗️ Multi-Subnetting</h2>
-    <p>In <strong>Day 4</strong>, we learned how to find the <em>usable host range</em>, <em>network address</em>, and <em>broadcast address</em> for a single network. Today, we will scale up and find these values for <strong>multiple subnets</strong> within a larger network.</p>
+    <p>The first line of an HTTP request starts with a <strong>Method</strong>. This tells the server what action you want to take.</p>
 
-    <h3>📜 The Golden Table</h3>
-    <p>Before we dive in, you must memorize (or bookmark) this relationship between CIDR, hosts, and subnets:</p>
+    <h3>🟢 The "Big Two" (Common Traffic)</h3>
 
-    <table>
-      <thead>
-        <tr>
-          <th>CIDR</th>
-          <th>Total IP Addresses</th>
-          <th>Number of subnets</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>/24</strong></td>
-          <td>256</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td><strong>/25</strong></td>
-          <td>128</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td><strong>/26</strong></td>
-          <td>64</td>
-          <td>4</td>
-        </tr>
-        <tr>
-          <td><strong>/27</strong></td>
-          <td>32</td>
-          <td>8</td>
-        </tr>
-        <tr>
-          <td><strong>/28</strong></td>
-          <td>16</td>
-          <td>16</td>
-        </tr>
-      </tbody>
-    </table>
+    <ul>
+      <li><strong>GET:</strong> Used to <strong>retrieve</strong> data. You send your information inside the <strong>URL</strong> (the Header).</li>
+      <li><strong>POST:</strong> Used to <strong>send</strong> data. You hide your information (like usernames and passwords) inside the <strong>Request Body</strong>.</li>
+    </ul>
 
-    <blockquote>
-      <p><strong>Rule of Thumb:</strong> As you move down, the total number of IPs is halved, while the number of subnets doubles (1 → 2 → 4 → 8 → 16).</p>
-    </blockquote>
+    <h3>🔴 The "Dangerous" Methods (Admin Tools)</h3>
 
-    <hr>
-
-    <h2>🧮 Example 1: Dividing into 4 Subnets</h2>
-    <p><strong>Goal:</strong> Divide <code>192.168.10.0/24</code> into <strong>4 subnets</strong>.</p>
-
-    <h3>🛠️ Solution:</h3>
-    <ol>
-      <li><strong>Identify New CIDR:</strong> Look at the table. To get <strong>4 subnets</strong>, we need a <strong>/26</strong> CIDR.</li>
-      <li><strong>Determine Host Size:</strong> A <strong>/26</strong> network has <strong>64 total hosts</strong>.
+    <ul>
+      <li><strong>PUT:</strong> Used to <strong>upload</strong> a file to a specific URL.
         <ul>
-          <li><strong>Total IPs:</strong> 64</li>
-          <li><strong>Usable Hosts:</strong> <code>64 - 2 = 62</code> (excluding Network and Broadcast addresses).</li>
+          <li><strong>Hacker Insight:</strong> If a developer leaves this open, a hacker can upload a "Malicious Script" (a Web Shell) to get full control of the server.</li>
+          <li><em>Note:</em> If the file already exists, it is replaced. If not, it is created.</li>
         </ul>
       </li>
-      <li><strong>Create the Blocks:</strong> Start from zero and add blocks of 64:
+      <li><strong>DELETE:</strong> Used to <strong>remove</strong> data from a specific URL.
         <ul>
-          <li><code>0, 64, 128, 192</code> (Next would be 256, which is out of range).</li>
+          <li><strong>Hacker Insight:</strong> If misconfigured, a hacker can delete important files or admin accounts to create chaos.</li>
         </ul>
       </li>
-      <li><strong>The Subnet Table:</strong></li>
-    </ol>
+      <li><strong>PATCH:</strong> While <strong>PUT</strong> replaces the whole file, <strong>PATCH</strong> only replaces a small part of it.</li>
+    </ul>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Range</th>
-          <th>Network Address</th>
-          <th>Broadcast Address</th>
-          <th>Usable Range</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>0 - 63</strong></td>
-          <td><code>192.168.10.0</code></td>
-          <td><code>192.168.10.63</code></td>
-          <td><code>192.168.10.1</code> to <code>192.168.10.62</code></td>
-        </tr>
-        <tr>
-          <td><strong>64 - 127</strong></td>
-          <td><code>192.168.10.64</code></td>
-          <td><code>192.168.10.127</code></td>
-          <td><code>192.168.10.65</code> to <code>192.168.10.126</code></td>
-        </tr>
-        <tr>
-          <td><strong>128 - 191</strong></td>
-          <td><code>192.168.10.128</code></td>
-          <td><code>192.168.10.191</code></td>
-          <td><code>192.168.10.129</code> to <code>192.168.10.190</code></td>
-        </tr>
-        <tr>
-          <td><strong>192 - 255</strong></td>
-          <td><code>192.168.10.192</code></td>
-          <td><code>192.168.10.255</code></td>
-          <td><code>192.168.10.193</code> to <code>192.168.10.254</code></td>
-        </tr>
-      </tbody>
-    </table>
+    <h3>🔍 For Reconnaissance (Information Gathering)</h3>
 
-    <hr>
-
-    <h2>🧮 Example 2: Dividing into 8 Subnets</h2>
-    <p><strong>Goal:</strong> Divide the same network into <strong>8 subnets</strong>.</p>
-
-    <h3>🛠️ Solution:</h3>
-    <ol>
-      <li><strong>Identify New CIDR:</strong> For 8 subnets, the table points to <strong>/27</strong>.</li>
-      <li><strong>Determine Host Size:</strong> A <strong>/27</strong> CIDR provides <strong>32 hosts</strong> per subnet.</li>
-      <li><strong>The Subnet Table:</strong></li>
-    </ol>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Hosts Range</th>
-          <th>Network Address</th>
-          <th>Broadcast Address</th>
-          <th>Usable Hosts</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>0 - 31</strong></td>
-          <td><code>192.168.10.0</code></td>
-          <td><code>192.168.10.31</code></td>
-          <td><code>.1</code> to <code>.30</code></td>
-        </tr>
-        <tr>
-          <td><strong>32 - 63</strong></td>
-          <td><code>192.168.10.32</code></td>
-          <td><code>192.168.10.63</code></td>
-          <td><code>.33</code> to <code>.62</code></td>
-        </tr>
-        <tr>
-          <td><strong>64 - 95</strong></td>
-          <td><code>192.168.10.64</code></td>
-          <td><code>192.168.10.95</code></td>
-          <td><code>.65</code> to <code>.94</code></td>
-        </tr>
-        <tr>
-          <td><strong>96 - 127</strong></td>
-          <td><code>192.168.10.96</code></td>
-          <td><code>192.168.10.127</code></td>
-          <td><code>.97</code> to <code>.126</code></td>
-        </tr>
-        <tr>
-          <td><strong>128 - 159</strong></td>
-          <td><code>192.168.10.128</code></td>
-          <td><code>192.168.10.159</code></td>
-          <td><code>.129</code> to <code>.158</code></td>
-        </tr>
-        <tr>
-          <td><strong>160 - 191</strong></td>
-          <td><code>192.168.10.160</code></td>
-          <td><code>192.168.10.191</code></td>
-          <td><code>.161</code> to <code>.190</code></td>
-        </tr>
-        <tr>
-          <td><strong>192 - 223</strong></td>
-          <td><code>192.168.10.192</code></td>
-          <td><code>192.168.10.223</code></td>
-          <td><code>.193</code> to <code>.222</code></td>
-        </tr>
-        <tr>
-          <td><strong>224 - 255</strong></td>
-          <td><code>192.168.10.224</code></td>
-          <td><code>192.168.10.255</code></td>
-          <td><code>.225</code> to <code>.254</code></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <blockquote>
-      <p><strong>💡 Pro Tip:</strong> If a message is destined for a device in the same subnet, the sender "shouts" (broadcasts) it. If it's for another subnet, it sends it to the <strong>Router</strong> for delivery.</p>
-    </blockquote>
-
-    <hr>
-
-    <h2>🎭 Subnet Mask</h2>
-    <p>A <strong>Subnet Mask</strong> is a 32-bit number used to distinguish the <strong>Network</strong> part from the <strong>Host</strong> part of an IP address.</p>
-    <p>Computers don't "see" IPs the way we do; they only understand binary. To make it human-friendly, engineers created Subnet Masks as an intermediary—think of it as a high-level language for networking.</p>
-
-    <h3>🧮 Finding a Subnet Mask</h3>
-    <p>To find a subnet mask, we count bits from <strong>left to right in descending order</strong> (starting with all <code>1s</code>).</p>
-
-    <h4><strong>Example 1: Basic Mask</strong></h4>
-    <p>Find the Subnet Mask for <code>192.168.10.0/24</code>.</p>
-    <ol>
-      <li>Think of the IP as a house with <strong>4 rooms</strong> (octets). Each room has <strong>8 switches</strong> (bits).</li>
-      <li>Distribute the CIDR <code>/24</code> into the rooms.
+    <ul>
+      <li><strong>HEAD:</strong> It is identical to <strong>GET</strong>, but the server's response contains <strong>only the headers</strong> and no body content.
         <ul>
-          <li>Room 1: 8 switches (All ON)</li>
-          <li>Room 2: 8 switches (All ON)</li>
-          <li>Room 3: 8 switches (All ON) -> Total 24.</li>
-          <li>Room 4: 8 switches (All OFF).</li>
+          <li><strong>Hacker Insight:</strong> It is great for "Stealth Recon." You can check if a file exists without downloading it, which might help you stay hidden from server logs.</li>
         </ul>
       </li>
-      <li><strong>Binary Form:</strong> <code>11111111.11111111.11111111.00000000</code></li>
-      <li><strong>Conversion:</strong> A room with all <code>1s</code> equals <strong>255</strong>. All <code>0s</code> equals <strong>0</strong>.
+      <li><strong>OPTIONS:</strong> Used to ask the server, "Which methods do you allow?"
         <ul>
-          <li><strong>Result:</strong> <code>255.255.255.0</code></li>
+          <li><strong>Hacker Insight:</strong> If the server says it allows <strong>PUT</strong> or <strong>DELETE</strong>, you have found a potential way in.</li>
         </ul>
       </li>
-    </ol>
+    </ul>
 
     <hr>
 
-    <h4><strong>Example 2: Intermediate Mask</strong></h4>
-    <p>Find the Subnet Mask for <code>10.1.1.50/29</code>.</p>
+    <h2>2. Practical: Burp Suite (The Hacker's Interface)</h2>
+
+    <p>When you first open <strong>Burp Suite (Community Edition)</strong>, it looks like a sci-fi dashboard. For now, we only care about the <strong>Proxy Tab</strong>.</p>
+
+    <h3>The Main Parts:</h3>
+
     <ol>
-      <li>First 3 octets get 8 bits each (24 bits total, all <code>1s</code>).</li>
-      <li>The remaining 5 bits (29 - 24 = 5) go into the 4th octet.</li>
-      <li><strong>Switch Values:</strong> <code>128, 64, 32, 16, 8, 4, 2, 1</code>.</li>
-      <li>Turn ON the first 5 switches: <code>128 + 64 + 32 + 16 + 8 = 248</code>.</li>
-      <li><strong>Result:</strong> <code>255.255.255.248</code></li>
+      <li><strong>The Dashboard:</strong> Shows what Burp is finding (you can ignore this for now).</li>
+      <li><strong>The Proxy Tab:</strong> The heart of the tool.
+        <ul>
+          <li><strong>Intercept Sub-tab:</strong> Used to "catch" requests in mid-air.</li>
+          <li><strong>HTTP History Sub-tab:</strong> A list of every request your browser has made.</li>
+        </ul>
+      </li>
+      <li><strong>The Repeater Tab:</strong> Used to take a caught request and "repeat" it manually to see what breaks.</li>
     </ol>
 
-    <hr>
+    <h3>🛠️ Step 1: Setting Up the "Hacker Browser"</h3>
 
-    <h4><strong>Example 3: Tricky Mask</strong></h4>
-    <p>Find the Subnet Mask for <code>172.16.0.0/20</code>.</p>
     <ol>
-      <li>First 2 octets are full (16 bits total).</li>
-      <li>The remaining 4 bits (20 - 16 = 4) go into the <strong>3rd octet</strong>.</li>
-      <li>The <strong>4th octet</strong> remains empty (<code>0</code>).</li>
-      <li>Turn ON the first 4 switches in the 3rd octet: <code>128 + 64 + 32 + 16 = 240</code>.</li>
-      <li><strong>Result:</strong> <code>255.255.240.0</code></li>
+      <li>Open Burp Suite.</li>
+      <li>Go to <strong>Proxy</strong> -> <strong>Intercept</strong>.</li>
+      <li>Click <strong>"Open Browser."</strong> (Use Burp’s built-in browser; it’s much easier!)</li>
+    </ol>
+
+    <h3>🚦 Step 2: Your First "Interception"</h3>
+
+    <ol>
+      <li>In the Burp Browser, go to <code>example.com</code>.</li>
+      <li>In Burp, make sure <strong>"Intercept is ON."</strong></li>
+      <li>Refresh the browser page.</li>
+      <li><strong>BOOM.</strong> The browser freezes. Burp has caught the request!</li>
+    </ol>
+
+    <h3>🕵️‍♂️ Step 3: Manipulating Live Data</h3>
+
+    <p>Look at the text in the Intercept window. You can actually edit it!</p>
+
+    <ol>
+      <li>Find the <code>User-Agent</code> line.</li>
+      <li>Delete it and type: <code>User-Agent: HACKER-USMAN</code>.</li>
+      <li>Click the <strong>"Forward"</strong> button.</li>
+      <li>The browser finishes loading, but you just sent a custom message the server wasn't expecting.</li>
     </ol>
 
     <hr>
 
-    <p><em><strong>The boring and confusing stuff finally ended!</strong></em> 😁🤣</p>
+    <h2>3. HTTP Status Codes (The Feedback)</h2>
 
-    <hr>
+    <p>These are 3-digit numbers the server sends back to tell you what happened. They are divided into 5 families:</p>
+
+    <h3>✅ 2xx Family (Success)</h3>
+
+    <ul>
+      <li><strong>200 OK:</strong> "Everything is fine, come in."</li>
+      <li><strong>201 Created:</strong> "Your file or user (via PUT/POST) was created successfully."</li>
+      <li><strong>204 No Content:</strong> "The request worked, but I have no data to send back."</li>
+    </ul>
+
+    <h3>↪️ 3xx Family (Redirection)</h3>
+
+    <ul>
+      <li><strong>301 Moved Permanently:</strong> "The old URL is gone forever."</li>
+      <li><strong>302 Found (Temporary Redirect):</strong> The <strong>Hacker's Favorite</strong>.
+        <ul>
+          <li><em>Example:</em> If your <code>OR 1=1</code> trick works, the server often sends a <strong>302</strong> to the <code>/dashboard</code>.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>⚠️ 4xx Family (Client Error)</h3>
+
+    <ul>
+      <li><strong>400 Bad Request:</strong> "Your syntax is wrong."</li>
+      <li><strong>401 Unauthorized:</strong> "I know who you are, but you don't have the key. Log in!"</li>
+      <li><strong>403 Forbidden:</strong> "I know who you are, but you are NOT allowed here."</li>
+      <li><strong>404 Not Found:</strong> "The page does not exist."</li>
+      <li><strong>405 Method Not Allowed:</strong> "You tried a method (like DELETE) that is blocked."</li>
+    </ul>
+
+    <h3>🔥 5xx Family (Server Error)</h3>
+
+    <ul>
+      <li><strong>500 Internal Server Error:</strong> "The server's code crashed."</li>
+      <li><strong>502 / 503:</strong> "The server is overloaded or the backend is down."</li>
+      <li><strong>504 Gateway Timeout:</strong> "The server took too long to answer."</li>
+    </ul>
 
     <div class="page-nav">
-      <a href="Day-04, Subnetting and CIDR.html">&#8592; Day-04, Subnetting and CIDR</a>
-      <a href="Day-06, ARP.html">Day-06, ARP &#8594;</a>
+      <a href="Day-13, HTTP.html">&#8592; Day-13, HTTP</a>
+      <div class="spacer"></div>
     </div>
 
     <footer class="page-footer">
@@ -430,8 +320,6 @@
           <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
           Instagram
         </a>
-        
-        
       </div>
       <p class="footer-copy">&copy; 2026 Muhammad Usman Said</p>
     </footer>

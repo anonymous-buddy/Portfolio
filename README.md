@@ -63,6 +63,18 @@ Portfolio/
 │   └── Month-02-Networking-Basics/
 │       ├── Day-01, All about IP Addresses.html
 │       ├── Day-02, Ports, IP, TCP, UDP.html
+│       ├── Day-03, OSI Model.html
+│       ├── Day-04, Subnetting and CIDR.html
+│       ├── Day-05, Multi Subnetting and Subnet Masks.html
+│       ├── Day-06, ARP.html
+│       ├── Day-07, ARP States.html
+│       ├── Day-08, ARP Poisoning with arpspoof.html
+│       ├── Day-09, DNS.html
+│       ├── Day-10, DNS Record Types and DNS spoofing.html
+│       ├── Day-11, DNS Cache Poisoning.html
+│       ├── Day-12, DNSSEC.html
+│       ├── Day-13, HTTP.html
+│       ├── Day-14, HTTP Methods and Status Codes.html
 │       └── QUOTES for Month-02.html
 └── README.md
 ```
@@ -76,7 +88,7 @@ A structured 18-month cybersecurity learning path, documented lesson by lesson.
 | Month | Topic                                                                          |     Status     | Lessons |
 | :---- | :----------------------------------------------------------------------------- | :------------: | :-----: |
 | 1     | **Feel Kali Like Home** — Linux fundamentals, commands, permissions, processes |  ✅ Completed  |    8    |
-| 2     | **Networking Basics** — IP, TCP/UDP, ports, DHCP, NAT                          | 🔵 In Progress | 2 / 30  |
+| 2     | **Networking Basics** — IP, TCP/UDP, ports, DHCP, NAT                          | 🔵 In Progress | 13 / 30 |
 | 3–18  | More paths coming soon                                                         |  ⏳ Upcoming   |    —    |
 
 Each lesson page features:

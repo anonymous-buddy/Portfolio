@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="./../Images/M2D5.svg">
-  <title>Day-05, Multi Subnetting and Subnet Masks | Learning</title>
+  <link rel="icon" type="image/svg+xml" href="./../Images/M2D13.svg">
+  <title>Day-13, HTTP | Learning</title>
   <style>
   @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700&display=swap');
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -153,263 +153,149 @@
     <span class="sep">&rsaquo;</span><span class="current">Month 02 Networking Basics</span>
   </div>
   <div class="container">
-    <h1>🔢 Day 5: Multi-Subnetting and Subnet Masks</h1>
+    <h1>🌐 Day 13: HTTP</h1>
     <p>
       <img src="https://img.shields.io/badge/Networking-Basics-blue?style=for-the-badge" alt="Networking">
-      <img src="https://img.shields.io/badge/Subnetting-Masks-success?style=for-the-badge" alt="Subnetting">
+      <img src="https://img.shields.io/badge/Web-informational?style=for-the-badge" alt="Web">
+      <img src="https://img.shields.io/badge/HTTP-critical?style=for-the-badge" alt="HTTP">
     </p>
 
     <blockquote>
-      <p><em>Think of a Large Company with different departments: HR, Sales, and IT. Subnetting is how we give each department its own secure floor while keeping everyone in the same building.</em> 🏢</p>
+      <p><em><strong>HTTP (HyperText Transfer Protocol)</strong> is the language of the web. It is a "Request-Response" protocol.</em> 🌐</p>
     </blockquote>
 
     <hr>
 
-    <h2>🏗️ Multi-Subnetting</h2>
-    <p>In <strong>Day 4</strong>, we learned how to find the <em>usable host range</em>, <em>network address</em>, and <em>broadcast address</em> for a single network. Today, we will scale up and find these values for <strong>multiple subnets</strong> within a larger network.</p>
+    <h2>1. What is HTTP?</h2>
 
-    <h3>📜 The Golden Table</h3>
-    <p>Before we dive in, you must memorize (or bookmark) this relationship between CIDR, hosts, and subnets:</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>CIDR</th>
-          <th>Total IP Addresses</th>
-          <th>Number of subnets</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>/24</strong></td>
-          <td>256</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td><strong>/25</strong></td>
-          <td>128</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td><strong>/26</strong></td>
-          <td>64</td>
-          <td>4</td>
-        </tr>
-        <tr>
-          <td><strong>/27</strong></td>
-          <td>32</td>
-          <td>8</td>
-        </tr>
-        <tr>
-          <td><strong>/28</strong></td>
-          <td>16</td>
-          <td>16</td>
-        </tr>
-      </tbody>
-    </table>
+    <ul>
+      <li><strong>Real-Life Example:</strong> Think of a waiter in a restaurant. You (the <strong>Client</strong>) ask for a menu (the <strong>Request</strong>). The waiter (the <strong>Protocol</strong>) takes that request to the kitchen (the <strong>Server</strong>) and brings back your food (the <strong>Response</strong>).</li>
+    </ul>
 
     <blockquote>
-      <p><strong>Rule of Thumb:</strong> As you move down, the total number of IPs is halved, while the number of subnets doubles (1 → 2 → 4 → 8 → 16).</p>
+      <p><strong>Hacker Insight:</strong> HTTP is <strong>plain text</strong>. If you are on an unencrypted Wi-Fi, a hacker using a tool like <em>Wireshark</em> can read your HTTP requests exactly like reading a text message.</p>
     </blockquote>
 
     <hr>
 
-    <h2>🧮 Example 1: Dividing into 4 Subnets</h2>
-    <p><strong>Goal:</strong> Divide <code>192.168.10.0/24</code> into <strong>4 subnets</strong>.</p>
-
-    <h3>🛠️ Solution:</h3>
-    <ol>
-      <li><strong>Identify New CIDR:</strong> Look at the table. To get <strong>4 subnets</strong>, we need a <strong>/26</strong> CIDR.</li>
-      <li><strong>Determine Host Size:</strong> A <strong>/26</strong> network has <strong>64 total hosts</strong>.
-        <ul>
-          <li><strong>Total IPs:</strong> 64</li>
-          <li><strong>Usable Hosts:</strong> <code>64 - 2 = 62</code> (excluding Network and Broadcast addresses).</li>
-        </ul>
-      </li>
-      <li><strong>Create the Blocks:</strong> Start from zero and add blocks of 64:
-        <ul>
-          <li><code>0, 64, 128, 192</code> (Next would be 256, which is out of range).</li>
-        </ul>
-      </li>
-      <li><strong>The Subnet Table:</strong></li>
-    </ol>
+    <h2>2. HTTP vs. HTTPS</h2>
 
     <table>
       <thead>
         <tr>
-          <th>Range</th>
-          <th>Network Address</th>
-          <th>Broadcast Address</th>
-          <th>Usable Range</th>
+          <th>Feature</th>
+          <th>HTTP (Insecure)</th>
+          <th>HTTPS (Secure)</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong>0 - 63</strong></td>
-          <td><code>192.168.10.0</code></td>
-          <td><code>192.168.10.63</code></td>
-          <td><code>192.168.10.1</code> to <code>192.168.10.62</code></td>
+          <td><strong>Encryption</strong></td>
+          <td>None. Data is "in the clear."</td>
+          <td>Encrypted via <strong>TLS/SSL</strong>.</td>
         </tr>
         <tr>
-          <td><strong>64 - 127</strong></td>
-          <td><code>192.168.10.64</code></td>
-          <td><code>192.168.10.127</code></td>
-          <td><code>192.168.10.65</code> to <code>192.168.10.126</code></td>
+          <td><strong>Port</strong></td>
+          <td>80</td>
+          <td>443</td>
         </tr>
         <tr>
-          <td><strong>128 - 191</strong></td>
-          <td><code>192.168.10.128</code></td>
-          <td><code>192.168.10.191</code></td>
-          <td><code>192.168.10.129</code> to <code>192.168.10.190</code></td>
-        </tr>
-        <tr>
-          <td><strong>192 - 255</strong></td>
-          <td><code>192.168.10.192</code></td>
-          <td><code>192.168.10.255</code></td>
-          <td><code>192.168.10.193</code> to <code>192.168.10.254</code></td>
+          <td><strong>Hacker's View</strong></td>
+          <td>Easy to "sniff" passwords.</td>
+          <td>Must use advanced "Man-in-the-Middle" (MITM) attacks.</td>
         </tr>
       </tbody>
     </table>
 
     <hr>
 
-    <h2>🧮 Example 2: Dividing into 8 Subnets</h2>
-    <p><strong>Goal:</strong> Divide the same network into <strong>8 subnets</strong>.</p>
+    <h2>3. Client vs. Server</h2>
 
-    <h3>🛠️ Solution:</h3>
-    <ol>
-      <li><strong>Identify New CIDR:</strong> For 8 subnets, the table points to <strong>/27</strong>.</li>
-      <li><strong>Determine Host Size:</strong> A <strong>/27</strong> CIDR provides <strong>32 hosts</strong> per subnet.</li>
-      <li><strong>The Subnet Table:</strong></li>
-    </ol>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Hosts Range</th>
-          <th>Network Address</th>
-          <th>Broadcast Address</th>
-          <th>Usable Hosts</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>0 - 31</strong></td>
-          <td><code>192.168.10.0</code></td>
-          <td><code>192.168.10.31</code></td>
-          <td><code>.1</code> to <code>.30</code></td>
-        </tr>
-        <tr>
-          <td><strong>32 - 63</strong></td>
-          <td><code>192.168.10.32</code></td>
-          <td><code>192.168.10.63</code></td>
-          <td><code>.33</code> to <code>.62</code></td>
-        </tr>
-        <tr>
-          <td><strong>64 - 95</strong></td>
-          <td><code>192.168.10.64</code></td>
-          <td><code>192.168.10.95</code></td>
-          <td><code>.65</code> to <code>.94</code></td>
-        </tr>
-        <tr>
-          <td><strong>96 - 127</strong></td>
-          <td><code>192.168.10.96</code></td>
-          <td><code>192.168.10.127</code></td>
-          <td><code>.97</code> to <code>.126</code></td>
-        </tr>
-        <tr>
-          <td><strong>128 - 159</strong></td>
-          <td><code>192.168.10.128</code></td>
-          <td><code>192.168.10.159</code></td>
-          <td><code>.129</code> to <code>.158</code></td>
-        </tr>
-        <tr>
-          <td><strong>160 - 191</strong></td>
-          <td><code>192.168.10.160</code></td>
-          <td><code>192.168.10.191</code></td>
-          <td><code>.161</code> to <code>.190</code></td>
-        </tr>
-        <tr>
-          <td><strong>192 - 223</strong></td>
-          <td><code>192.168.10.192</code></td>
-          <td><code>192.168.10.223</code></td>
-          <td><code>.193</code> to <code>.222</code></td>
-        </tr>
-        <tr>
-          <td><strong>224 - 255</strong></td>
-          <td><code>192.168.10.224</code></td>
-          <td><code>192.168.10.255</code></td>
-          <td><code>.225</code> to <code>.254</code></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <blockquote>
-      <p><strong>💡 Pro Tip:</strong> If a message is destined for a device in the same subnet, the sender "shouts" (broadcasts) it. If it's for another subnet, it sends it to the <strong>Router</strong> for delivery.</p>
-    </blockquote>
+    <ul>
+      <li><strong>The Client:</strong> This is <strong>you</strong>. Your Browser (Chrome/Firefox), your mobile app, or even a Python script. The Client always <em>starts</em> the conversation.</li>
+      <li><strong>The Server:</strong> A powerful computer (running software like Apache or Nginx) that sits and waits for requests. It holds the "goods"—databases, files, and private user data.</li>
+    </ul>
 
     <hr>
 
-    <h2>🎭 Subnet Mask</h2>
-    <p>A <strong>Subnet Mask</strong> is a 32-bit number used to distinguish the <strong>Network</strong> part from the <strong>Host</strong> part of an IP address.</p>
-    <p>Computers don't "see" IPs the way we do; they only understand binary. To make it human-friendly, engineers created Subnet Masks as an intermediary—think of it as a high-level language for networking.</p>
+    <h2>4. Request vs. Response</h2>
 
-    <h3>🧮 Finding a Subnet Mask</h3>
-    <p>To find a subnet mask, we count bits from <strong>left to right in descending order</strong> (starting with all <code>1s</code>).</p>
+    <p>This is the heartbeat of the web. Every single "click" triggers this cycle.</p>
 
-    <h4><strong>Example 1: Basic Mask</strong></h4>
-    <p>Find the Subnet Mask for <code>192.168.10.0/24</code>.</p>
+    <h3>A. The Request (What you send)</h3>
+
+    <pre><code class="language-http">GET /profile.php HTTP/1.1
+Host: socialmedia.com
+User-Agent: Mozilla/5.0
+Cookie: session_id=abc123xyz</code></pre>
+
+    <ul>
+      <li><strong>The Verb (GET):</strong> "Give me this file."</li>
+      <li><strong>The Path (/profile.php):</strong> Where the file is located.</li>
+      <li><strong>HTTP Version</strong></li>
+      <li><strong>Headers:</strong> Extra info (like "I am using a phone" or "Here is my login cookie").</li>
+    </ul>
+
+    <h3>B. The Response (What you get back)</h3>
+
+    <pre><code class="language-http">HTTP/1.1 200 OK
+Content-Type: text/html
+
+&lt;html&gt;&lt;body&gt;Welcome, Usman!&lt;/body&gt;&lt;/html&gt;</code></pre>
+
+    <ul>
+      <li><strong>HTTP Version</strong></li>
+      <li><strong>Status Code (200 OK):</strong> "I found it, here you go!"</li>
+      <li><strong>Status Message:</strong> OK in above example.</li>
+      <li><strong>Body:</strong> The actual HTML code the browser turns into a website.</li>
+    </ul>
+
+    <hr>
+
+    <h2>5. The "Stateless" Concept (The Amnesia Problem)</h2>
+
+    <p>HTTP is <strong>stateless</strong>. This means the server has a memory of exactly <strong>0 seconds</strong>. It doesn't know that the person who just asked for <code>profile.php</code> is the same person who logged in 5 seconds ago.</p>
+
+    <ul>
+      <li><strong>How we fix it:</strong> <strong>Cookies.</strong></li>
+      <li><strong>Hacker Example:</strong> When you log in, the server gives you a "Session ID" cookie. It’s like a wristband at a concert. You show the wristband (cookie) with every request so the server knows it's still you.</li>
+      <li><strong>The Attack:</strong> If a hacker steals your cookie, they <strong>become you</strong> without ever needing your password.</li>
+    </ul>
+
+    <hr>
+
+    <h2>6. What happens when you type a URL?</h2>
+
+    <p>(Example: <code>https://google.com</code>)</p>
+
     <ol>
-      <li>Think of the IP as a house with <strong>4 rooms</strong> (octets). Each room has <strong>8 switches</strong> (bits).</li>
-      <li>Distribute the CIDR <code>/24</code> into the rooms.
-        <ul>
-          <li>Room 1: 8 switches (All ON)</li>
-          <li>Room 2: 8 switches (All ON)</li>
-          <li>Room 3: 8 switches (All ON) -> Total 24.</li>
-          <li>Room 4: 8 switches (All OFF).</li>
-        </ul>
-      </li>
-      <li><strong>Binary Form:</strong> <code>11111111.11111111.11111111.00000000</code></li>
-      <li><strong>Conversion:</strong> A room with all <code>1s</code> equals <strong>255</strong>. All <code>0s</code> equals <strong>0</strong>.
-        <ul>
-          <li><strong>Result:</strong> <code>255.255.255.0</code></li>
-        </ul>
-      </li>
+      <li><strong>DNS Lookup:</strong> Your computer turns "google.com" into an IP address (e.g., <code>142.250.190.46</code>). <strong>Hacker trick:</strong> DNS Spoofing can send you to a fake IP.</li>
+      <li><strong>The Handshake:</strong> Your computer establishes a TCP connection (the "Hello" phase).</li>
+      <li><strong>The Request:</strong> Your browser sends the HTTP GET request.</li>
+      <li><strong>Processing:</strong> The server checks its database.</li>
+      <li><strong>The Response:</strong> The server sends back the HTML/CSS/JS.</li>
+      <li><strong>Rendering:</strong> Your browser paints the pretty website on your screen.</li>
     </ol>
 
     <hr>
 
-    <h4><strong>Example 2: Intermediate Mask</strong></h4>
-    <p>Find the Subnet Mask for <code>10.1.1.50/29</code>.</p>
+    <h2>🛠️ Practical 1: "The Developer's Eye"</h2>
+
+    <p><strong>Task:</strong> See the "text" behind the beauty.</p>
+
     <ol>
-      <li>First 3 octets get 8 bits each (24 bits total, all <code>1s</code>).</li>
-      <li>The remaining 5 bits (29 - 24 = 5) go into the 4th octet.</li>
-      <li><strong>Switch Values:</strong> <code>128, 64, 32, 16, 8, 4, 2, 1</code>.</li>
-      <li>Turn ON the first 5 switches: <code>128 + 64 + 32 + 16 + 8 = 248</code>.</li>
-      <li><strong>Result:</strong> <code>255.255.255.248</code></li>
+      <li>Open any website in <strong>Chrome</strong>.</li>
+      <li>Right-click anywhere and click <strong>Inspect</strong>.</li>
+      <li>Go to the <strong>Network</strong> tab.</li>
+      <li><strong>Refresh the page.</strong></li>
+      <li>Click on the first item in the list (usually the name of the website).</li>
+      <li>Look at <strong>Headers</strong>. You are now seeing the raw Request and Response.</li>
     </ol>
-
-    <hr>
-
-    <h4><strong>Example 3: Tricky Mask</strong></h4>
-    <p>Find the Subnet Mask for <code>172.16.0.0/20</code>.</p>
-    <ol>
-      <li>First 2 octets are full (16 bits total).</li>
-      <li>The remaining 4 bits (20 - 16 = 4) go into the <strong>3rd octet</strong>.</li>
-      <li>The <strong>4th octet</strong> remains empty (<code>0</code>).</li>
-      <li>Turn ON the first 4 switches in the 3rd octet: <code>128 + 64 + 32 + 16 = 240</code>.</li>
-      <li><strong>Result:</strong> <code>255.255.240.0</code></li>
-    </ol>
-
-    <hr>
-
-    <p><em><strong>The boring and confusing stuff finally ended!</strong></em> 😁🤣</p>
-
-    <hr>
 
     <div class="page-nav">
-      <a href="Day-04, Subnetting and CIDR.html">&#8592; Day-04, Subnetting and CIDR</a>
-      <a href="Day-06, ARP.html">Day-06, ARP &#8594;</a>
+      <a href="Day-12, DNSSEC.html">&#8592; Day-12, DNSSEC</a>
+      <div class="spacer"></div>
+      <a href="Day-14, HTTP Methods and Status Codes.html">Day-14, HTTP Methods... &#8594;</a>
     </div>
 
     <footer class="page-footer">
@@ -430,8 +316,6 @@
           <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
           Instagram
         </a>
-        
-        
       </div>
       <p class="footer-copy">&copy; 2026 Muhammad Usman Said</p>
     </footer>

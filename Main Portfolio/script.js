@@ -1,15 +1,3 @@
-const BOOT_MESSAGES = [
-  "Initializing kernel modules...",
-  "Loading system drivers...",
-  "Mounting file systems...",
-  "Scanning network interfaces...",
-  "Initializing 3D renderer...",
-  "Loading security protocols...",
-  "Establishing secure connection...",
-  "Compiling portfolio data...",
-  "System check complete.",
-];
-
 let isWindowLoaded = false;
 window.addEventListener("load", () => {
   isWindowLoaded = true;
@@ -17,8 +5,8 @@ window.addEventListener("load", () => {
 
 function startBoot() {
   if (sessionStorage.getItem("bootCompleted")) {
-    const bootScreen = document.getElementById("boot-screen");
-    if (bootScreen) bootScreen.style.display = "none";
+    const loader = document.getElementById("loader-container");
+    if (loader) loader.style.display = "none";
     const navbar = document.getElementById("navbar");
     if (navbar) navbar.classList.add("visible");
 
@@ -28,6 +16,7 @@ function startBoot() {
 
     setTimeout(() => {
       document.body.classList.remove("preload");
+      document.documentElement.classList.remove("preload");
     }, 200);
 
     initializeApp();
@@ -38,95 +27,162 @@ function startBoot() {
     return;
   }
 
-  const bootLogs = document.getElementById("boot-logs");
-  const progressFill = document.getElementById("boot-progress-fill");
-  const bootPercent = document.getElementById("boot-percent");
-  const bootStatus = document.getElementById("boot-status");
-  const bootBtn = document.getElementById("boot-btn");
+  const loaderPercent = document.getElementById("loader-percent");
+  const loaderStatus = document.getElementById("loader-status");
+  const loaderProgress = document.getElementById("loader-progress");
+  const loaderContainer = document.getElementById("loader-container");
 
-  if (!bootLogs || !bootBtn) {
+  // Telemetry HUDs
+  const hudMem = document.getElementById("hud-mem");
+  const hudData = document.getElementById("hud-data");
+  const hudSec = document.getElementById("hud-sec");
+  const hudNet = document.getElementById("hud-net");
+  const statusContainer = document.getElementById("aegis-status-container");
+
+  if (!loaderContainer) {
     setTimeout(startBoot, 100);
     return;
   }
 
-  let index = 0;
+  const stages = [
+    "INITIALIZING SYSTEM",
+    "SCANNING NETWORKS",
+    "DECRYPTING STREAMS",
+    "ACCESS GRANTED",
+  ];
+
   let currentProgress = 0;
-  let targetProgress = 0;
+  let targetProgress = 12; // Start burst
+  let currentStage = 0;
 
-  // Function to update progress smoothly
-  function updateProgress() {
-    if (currentProgress < targetProgress) {
-      currentProgress += 1;
-      if (progressFill) progressFill.style.width = currentProgress + "%";
-      if (bootPercent)
-        bootPercent.textContent = Math.round(currentProgress) + "%";
+  // Telemetry generator
+  const memInterval = setInterval(() => {
+    if (hudMem && currentProgress < 100) {
+      hudMem.textContent =
+        "0x" +
+        Math.floor(Math.random() * 65535)
+          .toString(16)
+          .toUpperCase()
+          .padStart(4, "0");
     }
+    if (hudData && currentProgress < 100) {
+      hudData.textContent = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.X.X`;
+    }
+  }, 100);
 
-    if (currentProgress >= 100 && isWindowLoaded) {
-      if (bootBtn) {
-        bootBtn.classList.add("visible");
-        bootBtn.addEventListener("click", enterSystem);
+  function updateStages(progress) {
+    const newStage = Math.floor(progress / 26);
+    if (newStage !== currentStage && newStage < 4) {
+      currentStage = newStage;
+
+      if (loaderStatus) {
+        // Trigger Glitch
+        loaderStatus.classList.add("glitching");
+        setTimeout(() => {
+          loaderStatus.textContent = stages[currentStage];
+          loaderStatus.setAttribute("data-text", stages[currentStage]);
+          loaderStatus.classList.remove("glitching");
+
+          if (currentStage === 3) {
+            statusContainer.classList.add("aegis-success");
+            if (hudSec) hudSec.textContent = "VERIFIED";
+            if (hudNet) hudNet.textContent = "CONNECTED";
+          } else if (currentStage === 2) {
+            if (hudSec) hudSec.textContent = "DECRYPTING...";
+          } else if (currentStage === 1) {
+            if (hudNet) hudNet.textContent = "UPLINK EST";
+          }
+        }, 300);
       }
-      if (bootStatus) bootStatus.textContent = "System Ready.";
-      return; // Stop updating
-    }
 
-    requestAnimationFrame(updateProgress);
+      for (let i = 0; i <= 3; i++) {
+        const dot = document.getElementById("stage-" + i);
+        if (!dot) continue;
+        if (i < currentStage) {
+          dot.className = "aegis-dot completed";
+        } else if (i === currentStage) {
+          dot.className = "aegis-dot active";
+        } else {
+          dot.className = "aegis-dot";
+        }
+      }
+    }
   }
 
-  updateProgress();
+  const startTime = Date.now();
+  const minLoadTime = 2200; // Slightly longer to appreciate the UI
 
-  const interval = setInterval(() => {
-    // If messages are done but window isn't loaded, stick at 90%
-    if (index >= BOOT_MESSAGES.length) {
-      if (isWindowLoaded) {
+  function updateLoader() {
+    const elapsed = Date.now() - startTime;
+
+    if (isWindowLoaded) {
+      if (elapsed > minLoadTime) {
         targetProgress = 100;
-        clearInterval(interval);
       } else {
-        targetProgress = 90; // Wait for load
+        targetProgress = Math.max(
+          targetProgress,
+          (elapsed / minLoadTime) * 100,
+        );
       }
+    } else {
+      // If not loaded, ease closely up to 88%
+      targetProgress += (88 - targetProgress) * 0.01;
+    }
+
+    currentProgress += (targetProgress - currentProgress) * 0.08;
+    if (currentProgress > 99.9) currentProgress = 100;
+
+    if (loaderProgress) loaderProgress.style.width = currentProgress + "%";
+    if (loaderPercent) loaderPercent.textContent = Math.floor(currentProgress);
+
+    updateStages(currentProgress);
+
+    if (currentProgress >= 100) {
+      clearInterval(memInterval);
+      if (hudMem) hudMem.textContent = "0xFFFF";
+      if (hudData) hudData.textContent = "OK";
+      setTimeout(finishBoot, 500); // Hold on 100% just briefly
       return;
     }
 
-    // Add log message
-    const logDiv = document.createElement("div");
-    logDiv.className = "boot-log";
-    logDiv.textContent = ">> " + BOOT_MESSAGES[index];
-    bootLogs.appendChild(logDiv);
+    requestAnimationFrame(updateLoader);
+  }
 
-    const container = bootLogs.parentElement;
-    if (container) container.scrollTop = container.scrollHeight;
-
-    // Calculate progress based on message index
-    // We reserve the last 10% for the actual window load event
-    const messageProgress = ((index + 1) / BOOT_MESSAGES.length) * 90;
-    targetProgress = Math.max(targetProgress, messageProgress);
-
-    if (bootStatus) bootStatus.textContent = BOOT_MESSAGES[index];
-
-    index++;
-  }, 300); // Slightly faster message updates
+  requestAnimationFrame(updateLoader);
 }
 
-function enterSystem() {
-  const bootScreen = document.getElementById("boot-screen");
-  bootScreen.classList.add("hidden");
+function finishBoot() {
+  const loader = document.getElementById("loader-container");
+  const core = document.getElementById("aegis-core");
+  const statusContainer = document.getElementById("aegis-status-container");
+
+  if (core) core.classList.add("iris-open");
+  if (statusContainer) statusContainer.classList.add("hidden");
+
+  if (loader) {
+    setTimeout(() => {
+      loader.classList.add("hidden");
+    }, 400); // 400ms after iris starts opening, fade the background
+  }
 
   sessionStorage.setItem("bootCompleted", "true");
 
-  window.scrollTo(0, 0);
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+  }, 100);
 
   setTimeout(() => {
-    bootScreen.style.display = "none";
+    if (loader) loader.style.display = "none";
     const navbar = document.getElementById("navbar");
     if (navbar) navbar.classList.add("visible");
     document.body.classList.remove("preload");
+    document.documentElement.classList.remove("preload");
     initializeApp();
 
     if (typeof window.initChatHint === "function") {
       window.initChatHint();
     }
-  }, 600);
+  }, 1100); // Wait for the full cinematic fade-out to finish
 }
 
 function initializeApp() {
