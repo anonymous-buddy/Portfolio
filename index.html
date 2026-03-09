@@ -411,7 +411,7 @@
    <div id="chatbot">
   <div id="chat-header">
     <span>Sentinel</span> 
-    <button id="chat-toggle">X</button>
+    <button id="chat-toggle">✘</button>
   </div>
 
   <div id="chat-body"></div>
@@ -437,7 +437,7 @@
     // Disable F12 and other developer tools shortcuts
     document.addEventListener('keydown', function(e) {
       if (
-        // e.key === 'F12' ||
+        e.key === 'F12' ||
         (e.ctrlKey && e.shiftKey && e.key === 'I') ||
         (e.ctrlKey && e.shiftKey && e.key === 'J') ||
         (e.ctrlKey && e.shiftKey && e.key === 'C') ||

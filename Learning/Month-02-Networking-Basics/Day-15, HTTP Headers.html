@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="./../Images/M2D14.svg">
-  <title>Day-14, HTTP Methods and Status Codes | Learning</title>
+  <link rel="icon" type="image/svg+xml" href="./../Images/M2D15.svg">
+  <title>Day-15, HTTP Headers | Learning</title>
   <style>
   @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700&display=swap');
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -153,153 +153,136 @@
     <span class="sep">&rsaquo;</span><span class="current">Month 02 Networking Basics</span>
   </div>
   <div class="container">
-    <h1>🌐 Day 14: HTTP Methods, Tools, and Status Codes</h1>
+    <h1>🌐 Day 15: HTTP Headers</h1>
     <p>
       <img src="https://img.shields.io/badge/Networking-Basics-blue?style=for-the-badge" alt="Networking">
       <img src="https://img.shields.io/badge/Web-informational?style=for-the-badge" alt="Web">
-      <img src="https://img.shields.io/badge/HTTP-critical?style=for-the-badge" alt="HTTP">
+      <img src="https://img.shields.io/badge/HTTP_Headers-critical?style=for-the-badge" alt="HTTP">
     </p>
 
+    <h2>1. Host Header: The GPS Coordinator</h2>
+    <p>A single domain (IP address) may host multiple websites on the same physical server. Some are public-facing, while others are "hidden" private admin panels. The <strong>Host</strong> header tells the server exactly which "apartment" in the building you want to visit.</p>
+
+    <h3><strong>The Attack: Host Header Injection</strong></h3>
+    <p>Imagine a "Forgot Password" flow. When you request a reset, the server generates a link like:</p>
+    <p><code>https://mybank.com/reset?token=abc123</code></p>
+    <p><strong>The Logic Flaw:</strong> How does the server know to write <code>mybank.com</code> in that URL? Often, it just reads the <strong>Host header</strong> you sent and trusts it blindly.</p>
+
+    <p><strong>The "Dirty Hands" Move:</strong> If you intercept the "forgot password" request and change the Host header to your own evil server, the request looks like this:</p>
+
+    <pre><code>POST /forgot-password HTTP/1.1
+Host: evil-hacker.com          &lt;-- You manually changed this!
+Content-Type: application/x-www-form-urlencoded
+
+email=victim@gmail.com</code></pre>
+
+    <p><strong>The Result:</strong> The real bank server generates a real token, but it builds the link using <em>your</em> host. The victim receives an official email saying:</p>
+
     <blockquote>
-      <p><em>Now that we understand the basics of Requests and Responses, it is time to decode every part of that "text conversation."</em> 🌐</p>
+      <p><em>Click here to reset: https://evil-hacker.com/reset?token=abc123</em></p>
     </blockquote>
 
-    <h2>1. HTTP Methods (The "Verbs")</h2>
+    <p>The victim clicks it, the secret token is sent to <strong>YOUR</strong> server logs, and you use that token on the real site to take over their account.</p>
 
-    <p>The first line of an HTTP request starts with a <strong>Method</strong>. This tells the server what action you want to take.</p>
+    <hr>
 
-    <h3>🟢 The "Big Two" (Common Traffic)</h3>
+    <h2>2. Cookie Header: The Identity Card</h2>
+    <p>When you login, the server gives you a unique string (the Cookie) stored in the browser's "cookie bucket." Because servers have "amnesia" and forget who you are the moment a request ends, the browser automatically sends this cookie with <strong>every</strong> future request to prove it's you.</p>
+
+    <h3><strong>The Attack: CSRF (Cross-Site Request Forgery)</strong></h3>
+    <p>Attackers take advantage of the fact that the browser <strong>automatically</strong> sends cookies. This happens because of developer laziness. For a cookie to be safe, these three "Bodyguards" must be added in the server's response:</p>
 
     <ul>
-      <li><strong>GET:</strong> Used to <strong>retrieve</strong> data. You send your information inside the <strong>URL</strong> (the Header).</li>
-      <li><strong>POST:</strong> Used to <strong>send</strong> data. You hide your information (like usernames and passwords) inside the <strong>Request Body</strong>.</li>
+      <li><strong>No <code>HttpOnly</code>:</strong> JavaScript can read the cookie. This means an <strong>XSS</strong> attack can steal it.</li>
+      <li><strong>No <code>Secure</code>:</strong> The cookie travels over plain HTTP (unencrypted). Anyone on your Wi-Fi (like at a café) can "sniff" it using <strong>Wireshark</strong>.</li>
+      <li><strong>No <code>SameSite=Strict</code>:</strong> This allows <strong>CSRF</strong> attacks. A hacker can trick you into clicking a link that makes your browser send a "Transfer Money" request to your bank, and the browser will automatically attach your login cookie!</li>
     </ul>
 
-    <h3>🔴 The "Dangerous" Methods (Admin Tools)</h3>
-
+    <h3><strong>Cookie vs. Token (The Difference)</strong></h3>
     <ul>
-      <li><strong>PUT:</strong> Used to <strong>upload</strong> a file to a specific URL.
-        <ul>
-          <li><strong>Hacker Insight:</strong> If a developer leaves this open, a hacker can upload a "Malicious Script" (a Web Shell) to get full control of the server.</li>
-          <li><em>Note:</em> If the file already exists, it is replaced. If not, it is created.</li>
-        </ul>
-      </li>
-      <li><strong>DELETE:</strong> Used to <strong>remove</strong> data from a specific URL.
-        <ul>
-          <li><strong>Hacker Insight:</strong> If misconfigured, a hacker can delete important files or admin accounts to create chaos.</li>
-        </ul>
-      </li>
-      <li><strong>PATCH:</strong> While <strong>PUT</strong> replaces the whole file, <strong>PATCH</strong> only replaces a small part of it.</li>
-    </ul>
-
-    <h3>🔍 For Reconnaissance (Information Gathering)</h3>
-
-    <ul>
-      <li><strong>HEAD:</strong> It is identical to <strong>GET</strong>, but the server's response contains <strong>only the headers</strong> and no body content.
-        <ul>
-          <li><strong>Hacker Insight:</strong> It is great for "Stealth Recon." You can check if a file exists without downloading it, which might help you stay hidden from server logs.</li>
-        </ul>
-      </li>
-      <li><strong>OPTIONS:</strong> Used to ask the server, "Which methods do you allow?"
-        <ul>
-          <li><strong>Hacker Insight:</strong> If the server says it allows <strong>PUT</strong> or <strong>DELETE</strong>, you have found a potential way in.</li>
-        </ul>
-      </li>
+      <li><strong>Cookie:</strong> A string stored in a dedicated browser bucket. It is given by the server upon login and is <strong>automatically</strong> added to requests by the browser.</li>
+      <li><strong>Token:</strong> Behaves similarly but is usually stored in <strong>Session Storage</strong> or <strong>Local Storage</strong>. It is NOT sent automatically; JavaScript must add it. This makes tokens safer from CSRF but very easy to steal via <strong>XSS</strong> if security is poor.</li>
     </ul>
 
     <hr>
 
-    <h2>2. Practical: Burp Suite (The Hacker's Interface)</h2>
+    <h2>3. Authorization Header: The App/API Key</h2>
+    <p>This header is the standard for mobile apps and APIs. It has two main formats:</p>
 
-    <p>When you first open <strong>Burp Suite (Community Edition)</strong>, it looks like a sci-fi dashboard. For now, we only care about the <strong>Proxy Tab</strong>.</p>
-
-    <h3>The Main Parts:</h3>
-
-    <ol>
-      <li><strong>The Dashboard:</strong> Shows what Burp is finding (you can ignore this for now).</li>
-      <li><strong>The Proxy Tab:</strong> The heart of the tool.
+    <ul>
+      <li><strong>Basic Auth:</strong> It simply encodes your <code>username:password</code> in <strong>Base64</strong>.
         <ul>
-          <li><strong>Intercept Sub-tab:</strong> Used to "catch" requests in mid-air.</li>
-          <li><strong>HTTP History Sub-tab:</strong> A list of every request your browser has made.</li>
+          <li><em>Hacker Note:</em> Base64 is NOT encryption. Anyone can decode it in a second.</li>
+          <li><code>Authorization: Basic dXNlcjpwYXNzd29yZA==</code></li>
         </ul>
       </li>
-      <li><strong>The Repeater Tab:</strong> Used to take a caught request and "repeat" it manually to see what breaks.</li>
-    </ol>
+      <li><strong>Bearer Token (JWT):</strong> A JSON Web Token with three parts: <code>Header.Payload.Signature</code>.
+        <ul>
+          <li><strong>Header:</strong> Tells the server how to verify the user.</li>
+          <li><strong>Payload:</strong> Contains the real data (User name, role: user, etc).</li>
+          <li><strong>Signature:</strong> This is the "Security Seal." (If the header/payload is changed, the signature becomes invalid).</li>
+        </ul>
+      </li>
+    </ul>
 
-    <h3>🛠️ Step 1: Setting Up the "Hacker Browser"</h3>
-
-    <ol>
-      <li>Open Burp Suite.</li>
-      <li>Go to <strong>Proxy</strong> -> <strong>Intercept</strong>.</li>
-      <li>Click <strong>"Open Browser."</strong> (Use Burp’s built-in browser; it’s much easier!)</li>
-    </ol>
-
-    <h3>🚦 Step 2: Your First "Interception"</h3>
-
-    <ol>
-      <li>In the Burp Browser, go to <code>example.com</code>.</li>
-      <li>In Burp, make sure <strong>"Intercept is ON."</strong></li>
-      <li>Refresh the browser page.</li>
-      <li><strong>BOOM.</strong> The browser freezes. Burp has caught the request!</li>
-    </ol>
-
-    <h3>🕵️‍♂️ Step 3: Manipulating Live Data</h3>
-
-    <p>Look at the text in the Intercept window. You can actually edit it!</p>
+    <h3><strong>The Vulnerability: JWT Manipulation</strong></h3>
+    <p>What if I change the header to <code>{"alg": "none"}</code>? A "dumb" server might be tricked into not using any authentication method at all.</p>
 
     <ol>
-      <li>Find the <code>User-Agent</code> line.</li>
-      <li>Delete it and type: <code>User-Agent: HACKER-USMAN</code>.</li>
-      <li>Click the <strong>"Forward"</strong> button.</li>
-      <li>The browser finishes loading, but you just sent a custom message the server wasn't expecting.</li>
+      <li>Change the role in the payload to <code>role: admin</code>.</li>
+      <li>Change the header to <code>alg: none</code>.</li>
+      <li>Delete the signature entirely.</li>
+      <li>The final Token becomes <code>Header.Payload.</code> (with only two dots and no signature). Boom—you are now an Admin.</li>
     </ol>
+
+    <p>If the "none" trick is blocked, hackers use a tool called <strong>Hashcat</strong> to brute-force the Signature if it was generated with a weak secret password.</p>
 
     <hr>
 
-    <h2>3. HTTP Status Codes (The Feedback)</h2>
+    <h2>4. Content-Type: The Label on the Box</h2>
+    <p>This tells the server what kind of data is in the "body" (HTML, JS, JSON, etc.).</p>
 
-    <p>These are 3-digit numbers the server sends back to tell you what happened. They are divided into 5 families:</p>
+    <h3><strong>The Attack: Content-Type Mismatch</strong></h3>
+    <p>If a server only trusts the "Label" (the header) and doesn't look at the "Contents" (the body), it creates chaos.</p>
 
-    <h3>✅ 2xx Family (Success)</h3>
+    <p><strong>1. CSRF Bypass:</strong> I change the header to <code>application/json</code> to trick the server into thinking it's a safe API call, but I send a malicious command in the body:</p>
 
-    <ul>
-      <li><strong>200 OK:</strong> "Everything is fine, come in."</li>
-      <li><strong>201 Created:</strong> "Your file or user (via PUT/POST) was created successfully."</li>
-      <li><strong>204 No Content:</strong> "The request worked, but I have no data to send back."</li>
-    </ul>
+    <pre><code>Content-type: application/json
 
-    <h3>↪️ 3xx Family (Redirection)</h3>
+amount=100000&amp;to=hacker_account</code></pre>
 
-    <ul>
-      <li><strong>301 Moved Permanently:</strong> "The old URL is gone forever."</li>
-      <li><strong>302 Found (Temporary Redirect):</strong> The <strong>Hacker's Favorite</strong>.
-        <ul>
-          <li><em>Example:</em> If your <code>OR 1=1</code> trick works, the server often sends a <strong>302</strong> to the <code>/dashboard</code>.</li>
-        </ul>
-      </li>
-    </ul>
+    <p>The server sees the "JSON" label, trusts it blindly, and sends the body straight to the database to be processed.</p>
 
-    <h3>⚠️ 4xx Family (Client Error)</h3>
+    <p><strong>2. File Upload Shell:</strong> I try to upload a <strong>PHP Shell Script</strong> (a virus that gives me total control). The server says "No PHP allowed!" <strong>The Move:</strong> I capture the request in <strong>Burp Suite</strong>, change the header to <code>Content-type: image/jpeg</code>, and hit send. The server thinks it's a photo, allows it, and now I have "Shell Access" to the entire server.</p>
 
-    <ul>
-      <li><strong>400 Bad Request:</strong> "Your syntax is wrong."</li>
-      <li><strong>401 Unauthorized:</strong> "I know who you are, but you don't have the key. Log in!"</li>
-      <li><strong>403 Forbidden:</strong> "I know who you are, but you are NOT allowed here."</li>
-      <li><strong>404 Not Found:</strong> "The page does not exist."</li>
-      <li><strong>405 Method Not Allowed:</strong> "You tried a method (like DELETE) that is blocked."</li>
-    </ul>
+    <p><strong>Rule:</strong> Never trust the user's label!</p>
 
-    <h3>🔥 5xx Family (Server Error)</h3>
+    <hr>
+
+    <h2>5. Content-Length: The Ruler</h2>
+    <p>This determines exactly how long the data is.</p>
+
+    <pre><code>POST / HTTP/1.1 
+Content-Length: 12
+
+Hello World!</code></pre>
+
+    <p>The server counts exactly 12 characters. When it hits the "!", it closes the connection.</p>
 
     <ul>
-      <li><strong>500 Internal Server Error:</strong> "The server's code crashed."</li>
-      <li><strong>502 / 503:</strong> "The server is overloaded or the backend is down."</li>
-      <li><strong>504 Gateway Timeout:</strong> "The server took too long to answer."</li>
+      <li><strong>The Glitch:</strong> If I say the length is 12 but only send "Hello" (5 characters), the server will sit and <strong>hang</strong>, keeping the connection open forever waiting for the rest.</li>
     </ul>
+
+    <hr>
+
+    <h2>6. Transfer-Encoding: The Conveyor Belt</h2>
+    <p>This header is used when the user isn't sure how long the data will be (like a live stream or a big file). It sends data in "chunks."</p>
+
+    <p><strong>The Rule:</strong> Unlike Content-Length, which stops at a specific count, Transfer-Encoding only closes the connection when it sees a <strong>lonely <code>0</code></strong> in the body.</p>
 
     <div class="page-nav">
-      <a href="Day-13, HTTP.html">&#8592; Day-13, HTTP</a>
-      <a href="Day-15, HTTP Headers.html">Day-15, HTTP Headers &#8594;</a>
+      <a href="Day-14, HTTP Methods and Status Codes.html">&#8592; Day-14, HTTP Methods and Status Codes</a>
+      <div class="spacer"></div>
     </div>
 
     <footer class="page-footer">
