@@ -5,6 +5,7 @@
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-usaihack.github.io-00ff9f?style=for-the-badge&labelColor=0a0e17)](https://usaihack.github.io/Portfolio/)
 [![GitHub](https://img.shields.io/badge/GitHub-usaihack-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/usaihack)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Usman_Said-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/usman701441070)
+[![Instagram](https://img.shields.io/badge/Instagram-Usman_Said-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/7014.us.41070)
 
 <br>
 
